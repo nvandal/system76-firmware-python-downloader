@@ -50,7 +50,7 @@ with requests.Session() as s:
     signature,message = struct.unpack('@64s336s',tail)
     
     #unpack block
-    public_key,previous_signature,counter,timestamp = struct.unpack('@32s64sqq',message[:112])
+    public_key,previous_signature,counter,timestamp = struct.unpack('@32s64sQQ',message[:112])
     
     #verify tail signature
     assert(b32decode(key) == public_key)
@@ -61,7 +61,7 @@ with requests.Session() as s:
     
     #unpack blockrequest
     BlockRequest= namedtuple('blockrequest', 'signature public_key previous_signature counter timestamp digest')
-    request = BlockRequest._make(struct.unpack('@64s32s64sqq48s',message[112:]))
+    request = BlockRequest._make(struct.unpack('@64s32s64sQQ48s',message[112:]))
     
     #create unpadded b32 encoded block
     Block = namedtuple('block', 'signature public_key previous_signature counter timestamp digest')
