@@ -93,17 +93,19 @@ with requests.Session() as s:
     #get firmware data digest
     digest = manifest['files'][filename]
     
-    #download firmware data and save as file
+    #download firmware data
     u = f'{url}object/{digest}'
     #print(u)
     r = s.get(u)
     r.raise_for_status()
-    with open(filename, 'wb') as f:
-        f.write(r.content)
     
     #verify firmware digest
     firmware_hash = hashlib.sha384(r.content).digest()
     assert(trunc_b32(firmware_hash)==digest)
+    
+    #save firmware archive to file
+    with open(filename, 'wb') as f:
+        f.write(r.content)
     
     #extract changelog (from memory)
     with io.BytesIO(r.content) as file_like_object:
